@@ -3,6 +3,13 @@ $(document).ready(function() {
 		executeData(data);
 	});
 	
+	$('.dropInterval > li').click(function() { 
+		$('.loss-list').empty();
+		$.get("api.php",{'interval' : $(this).find('a').html().replace("Day","").replace("s", "").trim()}, function(data) {
+			executeData(data);
+		});
+	});
+	
 	var executeData = function(data) {
 		var obj = $.parseJSON(data);
 				$('.dropPilots').empty();
@@ -153,6 +160,8 @@ $(document).ready(function() {
 					
 				});
 				
+				//Limpa todos os binds primeiro
+				('.dropPilots > li').unbind();
 				//Depois de popular a informação no dropdown, ele irá tratar os dados
 				$('.dropPilots > li').click(function() { 
 					$('.pilotButton').html($(this).find('a').html() + ' <span class="caret"></span>');
@@ -176,12 +185,7 @@ $(document).ready(function() {
 					}
 				});
 				
-				$('.dropInterval > li').click(function() { 
-					$('.loss-list').empty();
-					$.get("api.php",{'interval' : $(this).find('a').html().replace("Day","").replace("s", "").trim()}, function(data) {
-						executeData(data);
-					});
-				});
+
 	}
 	
 });
