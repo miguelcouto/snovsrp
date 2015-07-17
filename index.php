@@ -12,22 +12,26 @@
 	<script src="sources/js/icheck.min.js"></script>
 	<script src="sources/js/_.js"></script>
 	
+	<style>
+		body { background:#0F0F0F; }
+		.panel-default { 
+			border:2px #1F242B solid !important;
+		}
+		
+		.panel-heading {
+			background:#242A33 !important; 
+			color:#7D96BD !important;
+			border-bottom:0px !important;
+		}
+	</style>
+	
 </head>
 <body>
 	
-	<nav class="navbar navbar-default">
+	<nav class="navbar navbar-inverse">
 		<div class="container">
 			<div class="navbar-header">
-				<button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button" data-target=".navbar-ex1-collapse">
-						<span class="sr-only">
-							Toggle navigation
-						</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="/"><i class="glyphicon glyphicon-paperclip"></i> Supernova SRP</a></div>
-			<nav class="collapse navbar-collapse navbar-ex1-collapse" role="navigtion">
+				<a class="navbar-brand" href="/"><i class="glyphicon glyphicon-paperclip"></i> Supernova - SRP System</a></div>
 			</nav>
 		</div>
 		</div>
@@ -39,27 +43,24 @@
 			<!-- Default panel contents -->
 			<div class="panel-heading">
 				Filters: 
+				
 				<div class="btn-group">
-				  <button type="button" class="pilotButton btn btn-default">Select Pilot</button>
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<span class="caret"></span>
-					<span class="sr-only">Toggle Dropdown</span>
-				  </button>
-				  <ul class="dropPilots dropdown-menu"></ul>
+					<button class="pilotButton btn btn-warning dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						Select Pilot <span class="caret"></span>
+					</button>
+					<ul class="dropPilots dropdown-menu" aria-labelledby="dropdownMenu1"></ul>
 				</div>
-			
-				<div class="btn-group">			
-				  <button type="button" class="btn btn-default">Interval</button>
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<span class="caret"></span>
-					<span class="sr-only">Toggle Dropdown</span>
-				  </button>
-				  <ul class="dropdown-menu">
-					<li><a href="#">1 Day</a></li>
-					<li><a href="#">5 Days</a></li>
-					<li><a href="#">7 Days</a></li>
-					<li><a href="#">30 Days</a></li>
-				  </ul>
+				
+				<div class="btn-group">
+					<button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						Select Interval <span class="caret"></span>
+					</button>
+					<ul class="dropInterval dropdown-menu">
+						<li><a href="#">1 Day</a></li>
+						<li><a href="#">5 Days</a></li>
+						<li><a href="#">7 Days</a></li>
+						<li><a href="#">30 Days</a></li>
+					</ul>
 				</div>
 			</div>
 
@@ -75,7 +76,7 @@
 			
 			.list-group li .isk-block { float:right; height:64px; font-size:20px; padding-top:15px; font-family: 'Lato', sans-serif; }
 			
-			.losses-details { border-top:1px #ccc solid; margin-top:15px; }
+			.losses-details { border-top:1px #3B3B3B solid; margin-top:15px; }
 
 			</style>
 			
@@ -93,7 +94,7 @@
 			<p>Total Deaths: <span data-content="PilotLosses">0</span></p>
 		</div>
 		<div class="buttons-block">
-			<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-envelope"></i></button>
+			<button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-envelope"></i></button>
 		</div>
 		<div class="isk-block">
 			<strong>ISK <span id="totalToPay" data-content="IskTotalLosses"></span></strong>
@@ -102,7 +103,7 @@
 		
 		<div class="losses-details">
 			<ul class="print-losses" style="list-style:none; padding:0px; margin:0px;">
-
+				
 			</ul>
 		</div>
 	</script>
@@ -117,13 +118,13 @@
 				<strong>Location:</strong> 
 				<span data-content="SystemName"></span>/<span data-content="RegionName"></span>
 				(<strong><span data-content="SecStatus"></span></strong>)
-				<span class="HighSecKill" style="background:#F00000; color:#fff; line-height:16px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding:2px 6px 2px 6px; font-weight:bold;">High-Sec</span>
+				<span class="HighSecKill" style="background:#802F2F; color:#fff; line-height:16px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding:2px 6px 2px 6px; font-weight:bold;">High-Sec</span>
 			</p>
 			<p style="font-size:13px; padding:0px; margin:0px;"><a data-href="LossZKillBoardLink" target="_blank">[KILL-LINK]</a></p>
 		</div>
 		<div style="float:left; height:60px; width:250px; margin-left:5px; padding-top:20px; font-size:13px;">
-			<span data-content="IskLoss" style="color:#224C87; font-weight:bold;"></span>
-			<span class="HighValueKill" style="background:#F00000; color:#fff; line-height:16px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding:2px 6px 2px 6px; font-weight:bold;">High-Value</span>
+			<span data-content="IskLoss" style="color:#45FFE0; font-weight:bold;"></span>
+			<span class="HighValueKill" style="background:#802F2F; color:#fff; line-height:16px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding:2px 6px 2px 6px; font-weight:bold;">High-Value</span>
 		</div>
 		<div style="float:right; height:60px; width:20px; margin-left:5px;padding-top:20px;">
 			<input type="checkbox" data-value="iskLossCheck" checked>

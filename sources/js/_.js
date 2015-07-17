@@ -1,36 +1,37 @@
-$(document).ready(function() { 
-			
-			$.get("api.php",{'interval' : 7}, function(data) { 
-				
-				var obj = $.parseJSON(data);
-				
+$(document).ready(function() { 			
+	$.get("api.php",{'interval' : 7}, function(data) { 
+		executeData(data);
+	});
+	
+	var executeData = function(data) {
+		var obj = $.parseJSON(data);
+				$('.dropPilots').empty();
+				$('.dropPilots').append('<li><a href="#">All Pilots</a></li>');
 				//Percorre todos os pilotos
 				$.each(obj, function(key, value) {
-					
 					//Cria a lista de pilotos
 					$('.dropPilots').append('<li><a href="#">'+key+'</a></li>');
 					
-					var html = $('<li class="list-group-item"></li>').loadTemplate($('#template-li'), {
+					var html = $('<li pilotname="'+obj[key][0].name+'" class="list-group-item" style="background:#222222; border-top:1px #3B3B3B dashed !important; color:#DEDEDE !important;"></li>').loadTemplate($('#template-li'), {
 						PilotName : obj[key][0].name,
-						pilotzkillboard: 'https://zkillboard.com/character/'+obj[key][0].id,
-						PilotPicture : 'https://image.eveonline.com/Character/'+obj[key][0].id+'_64.jpg',
+						pilotzkillboard: 'https://zkillboard.com/character/' + obj[key][0].id,
+						PilotPicture : 'https://image.eveonline.com/Character/' + obj[key][0].id + '_64.jpg',
 						PilotLosses : obj[key][0].lossCount,
 						IskTotalLosses : $.number(obj[key][0].lossSum,2,',','.')
 					});
-					
 					
 					var totalPayed = 0;
 					//Percorre todas as kills
 					$.each(obj[key][0].killinfo, function(key, value) { 
 						
-						var losshtml = $('<li style="border-top:1px #ccc solid; padding:10px;"></li>').loadTemplate($('#template-lossDetail'), {
-							LossZKillBoardLink: 'https://zkillboard.com/kill/'+value.killID+'/',
-							shipType: 'https://image.eveonline.com/Type/'+value.shipTypeID+'_64.png',
+						var losshtml = $('<li style="border-top:1px #303030 solid; padding:10px;"></li>').loadTemplate($('#template-lossDetail'), {
+							LossZKillBoardLink: 'https://zkillboard.com/kill/' + value.killID + '/',
+							shipType: 'https://image.eveonline.com/Type/' + value.shipTypeID + '_64.png',
 							SystemName: value.system.name,
 							SecStatus: value.system.sec,
 							RegionName: value.system.region,
-							ShipName: value.shipName+' ('+value.shipTypeID+')',
-							IskLoss: 'ISK '+$.number(value.killvalue,2,',','.'),
+							ShipName: value.shipName + ' (' + value.shipTypeID + ')',
+							IskLoss: 'ISK ' + $.number(value.killvalue,2,',','.'),
 							iskLossCheck: value.killvalue
 						});
 						
@@ -99,24 +100,36 @@ $(document).ready(function() {
 							}
 							
 						}
-						
-						//Adiciona a opção de click
-						$(losshtml).find('input[type=checkbox]').click(function(){
-							alert($(this).val());
-						});	
-						
-						//Adiciona o elemento
-						$(html).find('.print-losses').append(losshtml);
-						
-						/*
+
 						//Demarca os elementos para modificar o estilo CSS das checkbox
-						$('input').iCheck({
+						$('input[type=checkbox]').iCheck({
 							checkboxClass: 'icheckbox_flat-green',
 							radioClass: 'iradio_flat-green'
 						});
-						*/
 						
-										
+						$(losshtml).find('.icheckbox_flat-green').click(function() { 
+							alert("teste");
+						});
+						
+						$('input[type=checkbox]').on('ifChanged', function(event){
+							//Aqui é marcado o objeto LI para referência futura
+							var liObj = $(this).parent().parent().parent().parent().parent().parent();
+							var sumValue = 0;
+							$.each($(liObj).find('input[type=checkbox]'), function(index) {
+								if ($(this).is(':checked')) {
+									//alert($(this).val());
+									sumValue = parseFloat(sumValue) + parseFloat($(this).val());
+									console.log(sumValue);
+								}
+							});
+							
+							//Agora ele imprime o valor diretamente na DIV responsável
+							$(liObj).find('#totalToPay').html($.number(sumValue,2,',','.'));
+						});
+						
+						//Adiciona o elemento
+						$(html).find('.print-losses').append(losshtml);
+								
 					});
 					
 					//Realiza as contas
@@ -124,27 +137,51 @@ $(document).ready(function() {
 					//Cria a loss-list completa
 					$('.loss-list').append(html);
 					
-					/*
-					$(html).find('.losses-details').hide();
+					$(html).find('.losses-details').slideUp(0);
 					
-					$('.loss-list').find('.list-group-item').click(function() {
-						if ($(this).find('.losses-details').is(":hidden")) 
+					$(html).find('.showDetailsPilot').click(function() {
+						if ($(this).parent().parent().parent().find('.losses-details').is(":hidden")) 
 						{
-							$(this).find('.losses-details').show(0.5);
+							$(this).parent().parent().parent().find('.losses-details').slideDown(500);
 						} 
 						else 
 						{
-							//$(this).find('.losses-details').slideUp(0.5);
+							$(this).parent().parent().parent().find('.losses-details').slideUp(500);
 						}
 						
 					});
-					*/
+					
 				});
 				
 				//Depois de popular a informação no dropdown, ele irá tratar os dados
 				$('.dropPilots > li').click(function() { 
-					$('.pilotButton').append($(this).html());
+					$('.pilotButton').html($(this).find('a').html() + ' <span class="caret"></span>');
+					
+					if ($(this).find('a').html() != "All Pilots") 
+					{
+						var pilotToFix = $(this).find('a').html();
+						$.each($('.list-group-item'), function(index) { 
+							if ($(this).attr('pilotname') != pilotToFix) {
+								$(this).slideUp(500);
+							} else {
+								$(this).slideDown(500);
+							}
+						});
+					} 
+					else 
+					{
+						$.each($('.list-group-item'), function(index) { 
+							$(this).slideDown(500);
+						});
+					}
 				});
-			});
-			
-		});
+				
+				$('.dropInterval > li').click(function() { 
+					$('.loss-list').empty();
+					$.get("api.php",{'interval' : $(this).find('a').html().replace("Day","").replace("s", "").trim()}, function(data) {
+						executeData(data);
+					});
+				});
+	}
+	
+});
