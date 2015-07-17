@@ -1,89 +1,17 @@
 <html>
 <head>
 	<title>Supernova SRP</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	
 	<link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="sources/css/green.css">
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script src="sources/js/jquery.loadTemplate-1.4.5.min.js"></script>
 	<script src="sources/js/jquery.number.min.js"></script>
+	<script src="sources/js/icheck.min.js"></script>
+	<script src="sources/js/_.js"></script>
 	
-	<script type="text/html" id="template-li">
-		<div class="avatar-block" class="left">
-			<img data-src="PilotPicture" width="64px" height="64px">
-		</div>
-		<div class="pilot-info-block">
-			<h4><a href="#" class="showDetailsPilot" data-content="PilotName"></a></h4>
-			<p>Total Deaths: <span data-content="PilotLosses">0</span></p>
-		</div>
-		<div class="buttons-block">
-			<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-envelope"></i></button>
-		</div>
-		<div class="isk-block">
-			<strong>ISK <span data-content="IskTotalLosses">999999999.99</span></strong>
-		</div>
-		<div style="clear:both;"></div>
-		
-		<div class="losses-details">
-			<ul class="print-losses" style="list-style:none; padding:0px; margin:0px;">
-
-			</ul>
-		</div>
-	</script>
-	
-	<script type="text/html" id="template-lossDetail">
-		<div class="avatar-block">
-			<a data-src="LossZKillBoardLink" target="_blank"><img style="-webkit-border-radius: 5px; border-radius: 5px;" data-src="shipType"></a>
-		</div>
-		<div class="pilot-info-block">
-			<h5><strong>Ship:</strong> Kestrel</h5>
-			<h5><strong>Location:</strong> Jita (<strong><span style="color:#48F0C0;">0.9</span></strong>)</h5>
-		</div>
-		<div style="clear:both;"></div>
-	</script>
-	
-	<script type="text/javascript">
-		$(document).ready(function() { 
-			
-			$.get("api.php",{'interval' : 7}, function(data) { 
-				
-				var obj = $.parseJSON(data);
-				//alert(data);
-				$.each(obj, function(key, value) {
-					$('.dropPilots').append('<li><a href="#">'+key+'</a></li>');
-					
-					var html = $('<li class="list-group-item"></li>').loadTemplate($('#template-li'), {
-						PilotName : obj[key][0].name,
-						PilotPicture : 'https://image.eveonline.com/Character/'+obj[key][0].id+'_64.jpg',
-						PilotLosses : obj[key][0].lossCount,
-						IskTotalLosses : $.number(obj[key][0].lossSum,2,',','.')
-					});
-					
-					$.each(obj[key][0].killinfo, function(key, value) { 
-						
-						
-						var losshtml = $('<li style="border-bottom:1px #ccc solid; padding:10px;"></li>').loadTemplate($('#template-lossDetail'), {
-							LossZKillBoardLink: 'https://zkillboard.com/kill/'+value.killID+'/',
-							shipType: 'https://image.eveonline.com/Type/'+value.shipTypeID+'_64.png'
-						});
-						
-						$(html).find('.print-losses').append(losshtml);
-						
-					});
-					
-					
-					$('.loss-list').append(html)			
-					
-				});
-				
-				//Depois de popular a informação no dropdown, ele irá tratar os dados
-				$('.dropPilots > li').click(function() { 
-					$('.pilotButton').append($(this).html());
-				});
-			});
-			
-		});
-	</script>
 </head>
 <body>
 	
@@ -155,6 +83,53 @@
 		</div>
 		
 	</div>
+	
+	<script type="text/html" id="template-li">
+		<div class="avatar-block" class="left">
+			<a data-href="pilotzkillboard" target="_blank"><img data-src="PilotPicture" width="64px" height="64px"></a>
+		</div>
+		<div class="pilot-info-block">
+			<h4><a href="#" class="showDetailsPilot" data-content="PilotName"></a></h4>
+			<p>Total Deaths: <span data-content="PilotLosses">0</span></p>
+		</div>
+		<div class="buttons-block">
+			<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-envelope"></i></button>
+		</div>
+		<div class="isk-block">
+			<strong>ISK <span id="totalToPay" data-content="IskTotalLosses"></span></strong>
+		</div>
+		<div style="clear:both;"></div>
+		
+		<div class="losses-details">
+			<ul class="print-losses" style="list-style:none; padding:0px; margin:0px;">
+
+			</ul>
+		</div>
+	</script>
+	
+	<script type="text/html" id="template-lossDetail">
+		<div style="width:64px; float:left;">
+			<a data-href="LossZKillBoardLink" target="_blank"><img style="-webkit-border-radius: 5px; border-radius: 5px;" data-src="shipType"></a>
+		</div>
+		<div style="float:left; height:64px; width:450px; margin-left:5px;">
+			<p style="font-size:13px; padding:0px; margin:0px;"><strong>Ship:</strong> <span data-content="ShipName"></span></p>
+			<p style="font-size:13px; padding:0px; margin:0px;">
+				<strong>Location:</strong> 
+				<span data-content="SystemName"></span>/<span data-content="RegionName"></span>
+				(<strong><span data-content="SecStatus"></span></strong>)
+				<span class="HighSecKill" style="background:#F00000; color:#fff; line-height:16px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding:2px 6px 2px 6px; font-weight:bold;">High-Sec</span>
+			</p>
+			<p style="font-size:13px; padding:0px; margin:0px;"><a data-href="LossZKillBoardLink" target="_blank">[KILL-LINK]</a></p>
+		</div>
+		<div style="float:left; height:60px; width:250px; margin-left:5px; padding-top:20px; font-size:13px;">
+			<span data-content="IskLoss" style="color:#224C87; font-weight:bold;"></span>
+			<span class="HighValueKill" style="background:#F00000; color:#fff; line-height:16px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding:2px 6px 2px 6px; font-weight:bold;">High-Value</span>
+		</div>
+		<div style="float:right; height:60px; width:20px; margin-left:5px;padding-top:20px;">
+			<input type="checkbox" data-value="iskLossCheck" checked>
+		</div>
+		<div style="clear:both;"></div>
+	</script>
 	
 </body>
 </html>

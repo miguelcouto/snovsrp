@@ -3,7 +3,15 @@
 header("Cache-Control: no-cache, must-revalidate"); 	// HTTP/1.1
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); 		// Date in the past
 
-//include("sources/classes/class.http.php");
+//Inicialmente o sistema irá carregar os sistemas diretamente do arquivo JSON, não utilizo banco de dados
+//para evitar a carga desnecessária de dados, e também por complicações na conexão utilizando o HEROKU
+//Preferi utilizar um arquivo JSON para armazenar os dados dos sistemas do EVE que são estáticos
+$systems = file_get_contents("data/systems.json");
+$sysJson = json_decode($systems, true);
+
+//Agora o sistema retorna todos os tipos de itens
+$invs = file_get_contents("data/types.json");
+$typJson = json_decode($invs, true);
 
 //API do zKillboard 
 $urlzKillboard = "https://zkillboard.com/api/losses/corporationID/1275978870/";
@@ -45,9 +53,15 @@ else
 				'name' => $a['victim']['characterName'],
 				//'hash' => $a['zkb']['hash'],
 				'killID' => $a['killID'],
-				'systemID' => $a['solarSystemID'],
+				'system' => array(
+					'id' => $a['solarSystemID'],
+					'region' => $sysJson[$a['solarSystemID']]['region'],
+					'name' => $sysJson[$a['solarSystemID']]['system'],
+					'sec' => number_format($sysJson[$a['solarSystemID']]['security'], 1)
+				),
 				'time' => $a['killTime'],
 				'shipTypeID' => $a['victim']['shipTypeID'],
+				'shipName' => $typJson[$a['victim']['shipTypeID']],
 				'killvalue' => $a['zkb']['totalValue'],
 			);
 			
