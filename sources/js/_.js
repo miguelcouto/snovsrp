@@ -1,4 +1,5 @@
 $(document).ready(function() { 			
+	/*
 	$.get("api.php",{'interval' : 7}, function(data) { 
 		executeData(data);
 	});
@@ -9,7 +10,7 @@ $(document).ready(function() {
 			executeData(data);
 		});
 	});
-	
+	*/
 	var executeData = function(data) {
 		var obj = $.parseJSON(data);
 				$('.dropPilots').empty();
@@ -24,7 +25,12 @@ $(document).ready(function() {
 						pilotzkillboard: 'https://zkillboard.com/character/' + obj[key][0].id,
 						PilotPicture : 'https://image.eveonline.com/Character/' + obj[key][0].id + '_64.jpg',
 						PilotLosses : obj[key][0].lossCount,
-						IskTotalLosses : $.number(obj[key][0].lossSum,2,',','.')
+						IskTotalLosses : $.number(obj[key][0].lossSum,2,',','.'),
+						idPilot : obj[key][0].id
+					})
+
+					$(html).find('.sendMailButton').click(function () { 
+						CCPEVE.sendMail($(this).attr('href'));
 					});
 					
 					var totalPayed = 0;
