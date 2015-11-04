@@ -5,7 +5,7 @@ include ('conn.php');
 include ('class.zkillboard.php');
 
 $zKill = new zKillboard(1275978870);
-$killData = $zKill->get(20);
+$killData = $zKill->get(30);
 
 ?>
 <html>
